@@ -16,6 +16,17 @@ const search = (title)=>{
     console.log("Query "+title)
     return userService.searchUser(title);
 }*/
+const acceptTrade = (bookId)=>{
+    return userService.acceptTrade(user,bookId);
+}
+const denyTrade = (bookId)=>{
+    return userService.denyTrade(user,bookId);
+}
+
+const cancelTrade = (bookId)=>{
+    return userService.cancelTrade(user,bookId);
+}
+
 module.exports={
-    save
+    save,acceptTrade, denyTrade,cancelTrade
 }
