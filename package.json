@@ -1,0 +1,22 @@
+{
+  "name": "booktrade",
+  "version": "1.0.0",
+  "description": "A booktrade app for FreeCodeCamp",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "dev": "npm run server",
+    "server": "nodemon server.js"
+  },
+  "author": "Marinao Moreno Alvariza",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.12",
+    "passport": "^0.4.0",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
+  }
+}
