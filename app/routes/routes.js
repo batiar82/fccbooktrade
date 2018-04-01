@@ -31,7 +31,7 @@ router.get('/books', cHandler(book.getAll));
 
 router.post('/books', cHandler(book.save, req => [req.body.book]));
 
-router.get('/books/search', cHandler(book.search, req => [req.params]));
+router.get('/books/search/:query', cHandler(book.search, req => [req.params.query]));
 router.patch('/books/:id', cHandler(book.toggleTradeable, req => [req.params.id]));
 router.delete('/books/:id', cHandler(book.deleteBook, req => [req.params.id]));
 
@@ -39,6 +39,11 @@ router.delete('/books/:id', cHandler(book.deleteBook, req => [req.params.id]));
  * User
  */
 router.post('/users', cHandler(user.save, req => [req.body.user]));
+router.post('/users/acceptTrade/:id', cHandler(user.acceptTrade, req => [req.params.id]));
+router.post('/users/denyTrade/:id', cHandler(user.denyTrade, req => [req.params.id]));
+router.post('/users/cancelTrade/:id', cHandler(user.cancelTrade, req => [req.params.id]));
+router.post('/users/requestTrade/:id', cHandler(user.requestTrade, req => [req.params.id]));
+
 /**
  * Auth
  */

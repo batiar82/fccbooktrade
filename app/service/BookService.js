@@ -3,63 +3,78 @@ const rp = require('request-promise');
 const User = require('../model/User');
 const Book = require('../model/Book');
 
-let getAll=()=>{
-    console.log("pepe");
-    //return "pepe";
+let getAll = () => {
     return Book.find({}).exec();
 }
 
-let saveBook = async (user, book)=>{
+let saveBook = async (user, book) => {
 
-    book.owner=user;
-    console.log(JSON.stringify(book));
-    try{
-        newBook=new Book(book);
-        //let dbUser=await User.findById(user);
-        //console.log("DBUSER "+JSON.stringify(dbUser));
-        newBook.owner=user;
+    book.owner = user;
+    try {
+        newBook = new Book(book);
+        newBook.owner = user;
         await newBook.validate();
         return newBook.save();
-    }catch(validateError){
-        throw new ServerError(validateError.message,400);
+    } catch (validateError) {
+        throw new ServerError(validateError.message, 400);
     }
 }
 
-let searchBook = async (query)=>{
-    const options={url: parseURI(`https://www.googleapis.com/books/v1/volumes?q=${query}+intitle:${query}&fields=items(id,volumeInfo/title,volumeInfo/imageLinks)`)}
-    try{
-        const response = await rp(options);
+let searchBook = async (query) => {
+    const options = { url: encodeURI(`https://www.googleapis.com/books/v1/volumes?q=${query}+intitle:${query}&fields=items(id,volumeInfo/title,volumeInfo/imageLinks)`) }
+    return new Promise(function (resolve, reject) {
+        rp(options).then(function (response, errors) {
+            if (errors) {
+                reject(errors);
+            }
+            items = JSON.parse(response).items;
+            let booksArr = [];
+            if (items != undefined)
+                booksArr = items;
+            const books = booksArr.map(book => {
+                const info = book.volumeInfo;
 
-        return Promise.resolve
-    }catch(error){
-        Promise.reject(error);
-    }
-    
+                let thumb = "";
+                if (info.imageLinks != undefined && info.imageLinks.smallThumbnail != undefined)
+                    thumb = info.imageLinks.smallThumbnail;
+                bookObj = {
+                    googleId: book.id,
+                    title: info.title,
+                    imageUrl: thumb
+                }
+
+                return bookObj;
+            });
+            resolve(books);
+
+        })
+    })
 }
-let toggleTradeable = async (bookId)=>{
-    try{
-        let book=await Book.findById(bookId);
+let toggleTradeable = async (bookId) => {
+    try {
+        let book = await Book.findById(bookId);
 
-        book.set({tradeable:!book.tradeable});
+        book.set({ tradeable: !book.tradeable });
         return book.save();
-        
-    }catch(error){
+
+    } catch (error) {
         throw error;
     }
 }
-let deleteBook = async (bookId)=>{
-    try{
-        console.log("BookId: "+bookId);
-        return Book.deleteOne({_id: bookId});
-    }catch(error){
+let deleteBook = async (bookId) => {
+    try {
+        console.log("BookId: " + bookId);
+        return Book.deleteOne({ _id: bookId });
+    } catch (error) {
         throw error;
     }
 }
-module.exports={
+module.exports = {
     getAll,
     saveBook,
     toggleTradeable,
-    deleteBook
+    deleteBook,
+    searchBook
 }
 
 

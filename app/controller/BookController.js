@@ -19,9 +19,9 @@ const save = (book)=>{
     return bookService.saveBook(mockUser,book);
 }
 
-const search = (title)=>{
-    console.log("Query "+title)
-    return bookService.searchBook(title);
+const search = (query)=>{
+    console.log("Query "+query)
+    return bookService.searchBook(query);
 }
 const toggleTradeable = (bookId)=>{
     return bookService.toggleTradeable(bookId);

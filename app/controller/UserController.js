@@ -1,11 +1,8 @@
 const userService = require('../service/UserService');
 
-/*
-const getAll = () =>{
-    //console.log("lalal")
-    return userService.getAll();
-}
-*/
+const mockUser1="5abfb36c05655135465670af".toObjectId();
+const mockUser2="5abfff89e95ae9588f1f75b8".toObjectId();
+
 const save = (user)=>{
     console.log("User "+user);
     console.log("User: "+JSON.stringify(user));
@@ -17,16 +14,21 @@ const search = (title)=>{
     return userService.searchUser(title);
 }*/
 const acceptTrade = (bookId)=>{
-    return userService.acceptTrade(user,bookId);
+    console.log("Book encontr "+bookId);
+    return userService.acceptTrade(bookId);
 }
 const denyTrade = (bookId)=>{
     return userService.denyTrade(user,bookId);
 }
 
 const cancelTrade = (bookId)=>{
-    return userService.cancelTrade(user,bookId);
+    return userService.cancelTrade(bookId);
+}
+
+const requestTrade = (bookId)=>{
+    return userService.requestTrade(mockUser2,bookId);
 }
 
 module.exports={
-    save,acceptTrade, denyTrade,cancelTrade
+    save,acceptTrade, denyTrade,cancelTrade,requestTrade
 }

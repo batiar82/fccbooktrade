@@ -9,7 +9,9 @@ let User = new Schema({
     city: String,
     state: String,
     books: [{type: Schema.Types.ObjectId,ref: 'Book'}],
+    //libros ue este usuario pide a otros
     requestedBooks: [{type: Schema.Types.ObjectId,ref: 'Book'}],
+    //libros que le piden a este usuario
     requiredBooks: [{type: Schema.Types.ObjectId,ref: 'Book'}]
 });
 
