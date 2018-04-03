@@ -1,5 +1,5 @@
 const userService = require('../service/UserService');
-
+const { requireAuthentication } = require('../service/Auth');
 const mockUser1="5abfb36c05655135465670af".toObjectId();
 const mockUser2="5abfff89e95ae9588f1f75b8".toObjectId();
 
@@ -28,7 +28,11 @@ const cancelTrade = (bookId)=>{
 const requestTrade = (bookId)=>{
     return userService.requestTrade(mockUser2,bookId);
 }
-
+const getMe = (user,userId)=>{
+    console.log("user "+JSON.stringify(user));
+    requireAuthentication(user);
+    return userService.getById(userId);
+}
 module.exports={
-    save,acceptTrade, denyTrade,cancelTrade,requestTrade
+    getMe,save,acceptTrade, denyTrade,cancelTrade,requestTrade
 }

@@ -4,6 +4,7 @@ const router = express.Router();
 const book = require('../controller/BookController');
 const user = require('../controller/UserController');
 const auth = require('../controller/AuthController');
+const passport = require('passport');
 
 /**
  * Handles controller execution and responds to user (API version).
@@ -13,6 +14,7 @@ const auth = require('../controller/AuthController');
  * @param params (req) => [params, ...].
  */
 const controllerHandler = (promise, params) => async (req, res, next) => {
+  
   const boundParams = params ? params(req, res, next) : [];
   try {
     const result = await promise(...boundParams);
@@ -29,7 +31,7 @@ const cHandler = controllerHandler;
  */
 router.get('/books', cHandler(book.getAll));
 
-router.post('/books', cHandler(book.save, req => [req.body.book]));
+router.post('/books', cHandler(book.save, req => [req.user,req.body.book]));
 
 router.get('/books/search/:query', cHandler(book.search, req => [req.params.query]));
 router.patch('/books/:id', cHandler(book.toggleTradeable, req => [req.params.id]));
@@ -43,11 +45,33 @@ router.post('/users/acceptTrade/:id', cHandler(user.acceptTrade, req => [req.par
 router.post('/users/denyTrade/:id', cHandler(user.denyTrade, req => [req.params.id]));
 router.post('/users/cancelTrade/:id', cHandler(user.cancelTrade, req => [req.params.id]));
 router.post('/users/requestTrade/:id', cHandler(user.requestTrade, req => [req.params.id]));
-
+router.get('/users/:id',cHandler(user.getMe, req=>[req.user,req.params.id]));
 /**
  * Auth
  */
-router.post('/signup', cHandler(auth.signUp, (req, res, next) => [req, res, next]));
-router.post('/login', cHandler(auth.login, (req, res, next) => [req, res, next]));
+router.post('/login', 
+  passport.authenticate('local-signin',  {
+    successRedirect: '/home',
+    failureRedirect: '/',
+    failureFlash : true 
+  }));
 
-module.exports = router;
+  router.get('/home', isAuthenticated, function(req, res){
+    res.json('home', { user: req.user });
+  });
+  
+  function isAuthenticated(req, res, next) {
+    console.log("Autenticado ? "+req.isAuthenticated());
+    if (req.isAuthenticated())
+      return next();
+    res.redirect('/');
+  }
+
+
+router.post('/signup', cHandler(auth.signup, (req, res, next) => [req, res, next]));
+
+router.post('/signup', cHandler(auth.signup, (req, res, next) => [req, res, next]));
+
+router.post('/signin', cHandler(auth.signin, (req, res, next) => [req, res, next]));
+
+module.exports = router; 

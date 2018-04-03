@@ -21,7 +21,7 @@ let saveBook = async (user, book) => {
 }
 
 let searchBook = async (query) => {
-    const options = { url: encodeURI(`https://www.googleapis.com/books/v1/volumes?q=${query}+intitle:${query}&fields=items(id,volumeInfo/title,volumeInfo/imageLinks)`) }
+    const options = { url: encodeURI(`https://www.googleapis.com/books/v1/volumes?q=${query}+intitle:${query}&fields=items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/imageLinks)`) }
     return new Promise(function (resolve, reject) {
         rp(options).then(function (response, errors) {
             if (errors) {
@@ -35,12 +35,17 @@ let searchBook = async (query) => {
                 const info = book.volumeInfo;
 
                 let thumb = "";
+                let author = "";
                 if (info.imageLinks != undefined && info.imageLinks.smallThumbnail != undefined)
                     thumb = info.imageLinks.smallThumbnail;
+                if (info.authors != undefined)
+                    author = info.authors[0]
+
                 bookObj = {
                     googleId: book.id,
                     title: info.title,
-                    imageUrl: thumb
+                    author: author,
+                    coverUrl: thumb
                 }
 
                 return bookObj;

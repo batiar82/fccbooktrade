@@ -86,4 +86,13 @@ let cancelTrade = async (bookId) => {
         throw error;
     }
 }
-module.exports = { saveUser, acceptTrade, cancelTrade, denyTrade,requestTrade }
+let getById = async(userId)=> {
+    try{
+        let user = await User.findById(userId,{password:0}).exec;
+        console.log("User de la db "+user);
+        return user;
+    }catch(err){
+        throw(err);
+    }
+}
+module.exports = { saveUser, acceptTrade, cancelTrade, denyTrade,requestTrade, getById }

@@ -1,5 +1,5 @@
 const bookService = require('../service/BookService');
-
+const { requireAuthentication } = require('../service/Auth');
 
 String.prototype.toObjectId = function() {
     var ObjectId = (require('mongoose').Types.ObjectId);
@@ -11,9 +11,12 @@ const getAll = () =>{
     return bookService.getAll();
 }
 
-const save = (book)=>{
-    //console.log("User "+user);
-    mockUser="5abfb36c05655135465670af".toObjectId();
+const mockUser="5abfb36c05655135465670af".toObjectId();
+
+const save = (user,book)=>{
+    console.log("User "+user);
+    requireAuthentication(user);
+    
     console.log("Book: "+JSON.stringify(book));
     console.log("MockUser "+JSON.stringify(mockUser));
     return bookService.saveBook(mockUser,book);
